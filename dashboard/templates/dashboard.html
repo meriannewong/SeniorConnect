@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SeniorConnect - Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-shell">
+
+  <div class="topbar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+      <svg class="brand-mark" width="35" height="35" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="10" r="4.2" fill="#4A90D2"/>
+        <path d="M14 15.5c-5 0-8.5 4-8.5 9v6.5c0 1 .8 1.8 1.8 1.8h13.4c1 0 1.8-.8 1.8-1.8V24.5c0-5-4-9-8.5-9z" fill="#4A90D2"/>
+        <circle cx="25" cy="16" r="3.4" fill="#5DADE2"/>
+        <path d="M25 20.2c-4 0-7 3.2-7 7.3v3.6c0 .9.7 1.6 1.6 1.6h10.8c.9 0 1.6-.7 1.6-1.6v-3.6c0-4.1-3-7.3-7-7.3z" fill="#5DADE2"/>
+        <path d="M4 33c4-4 8-4 12-1c4-3 8-3 12 1" fill="none" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <span class="brand-name">SeniorConnect</span>
+    </a>
+    <div class="status-pill {{ 'offline' if not online else '' }}">
+      <span class="pulse-dot"></span>
+      {% if online %}
+        Device online
+      {% else %}
+        Device offline{% if last_seen %} - last synced {{ last_seen }}{% endif %}
+      {% endif %}
+    </div>
+    <nav>
+      <!-- <a href="{{ url_for('dashboard') }}" class="active">Dashboard</a> -->
+      <a href="{{ url_for('alerts_page') }}">Alerts</a>
+      <a href="{{ url_for('history') }}">History</a>
+      {% if session.get('role') == 'superuser' %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+      <details class="user-menu">
+        <summary>Welcome, {{ session['username'] }}</summary>
+        <div class="user-menu-dropdown">
+          <a href="{{ url_for('profile') }}">Profile</a>
+          <a href="{{ url_for('profile_edit') }}">Edit Profile</a>
+          <a href="{{ url_for('settings') }}">Settings</a>
+          <a href="{{ url_for('logout') }}">Log out</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+
+  <a href="{{ url_for('profile') }}" class="resident-strip">
+    <span class="resident-strip-avatar">
+      {% if photo %}
+      <img src="{{ url_for('static', filename='uploads/' + photo) }}" alt="{{ resident.name }}">
+      {% else %}
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg>
+      {% endif %}
+    </span>
+    <span class="resident-strip-name">{{ resident.name }} &middot; {{ resident.age }} yrs &middot; {{ resident.sex }}</span>
+    <!-- <span class="resident-strip-link">View profile &rarr;</span> -->
+  </a>
+  {% if latest_alert %}
+  <div class="alert-banner">
+      <div class="alert-title-row">
+      <span class="alert-pulse-dot"></span>
+      <span class="alert-title">{{ latest_alert.message }}</span>
+      </div>
+      <p class="alert-body">Detected {{ latest_alert.timestamp }}{% if latest_alert.confidence %} &middot; {{ (latest_alert.confidence * 100) | round | int }}% confidence{% endif %}</p>
+      <a class="alert-link" href="{{ url_for('alerts_page') }}">Review in alerts &rarr;</a>
+  </div>
+  {% endif %}
+
+  {% if needs_attention %}
+  <div class="needs-attention">
+    <p class="needs-attention-title">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      Needs attention
+    </p>
+  {% for item in needs_attention %}
+  <div class="needs-attention-row">
+  <!-- <span class="status-dot {{ 'danger' if item.kind == 'alert' else 'warn' }}"></span> -->
+  <div class="needs-attention-info">
+      <p class="needs-attention-name">
+      <span class="severity-badge {{ item.kind }}">{{ 'Alert' if item.kind == 'alert' else 'Reminder' }}</span>
+      {{ item.title }}
+      </p>
+      <p class="needs-attention-detail">{{ item.detail }}</p>
+  </div>
+<div class="needs-attention-meta">
+    <p class="needs-attention-value">{{ item.value }}</p>
+    <p class="needs-attention-note">{{ item.note }}</p>
+</div>
+</div>
+{% endfor %}
+  </div>
+  {% else %}
+  <div class="needs-attention all-clear">
+    <span class="status-dot ok"></span>
+    <p>All vitals and readings are within range</p>
+  </div>
+  {% endif %}
+
+  <div class="dashboard-grid-wrap">
+    <div class="dashboard-grid">
+
+      <!-- vitals: heart rate, blood pressure, temperature+oxygen, each still its own
+           quick-update form, just grouped under one card instead of three -->
+      <div class="area-vitals card-panel">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Vitals - {{ vitals_recorded }} of 4 recorded
+        </div>
+        <div class="panel-scroll">
+
+          <div class="vital-mini-row">
+            <div class="vital-mini-info">
+              <span class="status-dot {{ 'ok' if vitals.heart_rate else 'warn' }}"></span>
+              <span class="vital-mini-label">Heart rate</span>
+              <span class="vital-mini-value">{{ vitals.heart_rate or '--' }} bpm</span>
+            </div>
+            <form method="post" action="{{ url_for('update_heart_rate') }}" class="vital-edit">
+              <input type="number" name="heart_rate" placeholder="bpm" required>
+              <button type="submit">Update</button>
+            </form>
+          </div>
+
+          <div class="vital-mini-row">
+            <div class="vital-mini-info">
+              <span class="status-dot {{ 'ok' if (vitals.bp_systolic and vitals.bp_diastolic) else 'warn' }}"></span>
+              <span class="vital-mini-label">Blood pressure</span>
+              <span class="vital-mini-value">{{ vitals.bp_systolic or '--' }}/{{ vitals.bp_diastolic or '--' }} mmHg</span>
+            </div>
+            <form method="post" action="{{ url_for('update_bp') }}" class="vital-edit">
+              <input type="number" name="bp_systolic" placeholder="sys" required>
+              <input type="number" name="bp_diastolic" placeholder="dia" required>
+              <button type="submit">Update</button>
+            </form>
+          </div>
+
+          <div class="vital-mini-row">
+            <div class="vital-mini-info">
+              <span class="status-dot {{ 'ok' if vitals.temperature else 'warn' }}"></span>
+              <span class="vital-mini-label">Temperature</span>
+              <span class="vital-mini-value">{{ vitals.temperature or '--' }}&deg;C</span>
+            </div>
+            <form method="post" action="{{ url_for('update_temperature') }}" class="vital-edit">
+              <input type="number" step="0.1" name="temperature" placeholder="&deg;C" required>
+              <button type="submit">Update</button>
+            </form>
+          </div>
+
+          <div class="vital-mini-row">
+            <div class="vital-mini-info">
+              <span class="status-dot {{ 'ok' if vitals.oxygen else 'warn' }}"></span>
+              <span class="vital-mini-label">Oxygen</span>
+              <span class="vital-mini-value">{{ vitals.oxygen or '--' }}%</span>
+            </div>
+            <form method="post" action="{{ url_for('update_oxygen') }}" class="vital-edit">
+              <input type="number" name="oxygen" placeholder="%" required>
+              <button type="submit">Update</button>
+            </form>
+          </div>
+
+          <p class="mini-caption">{% if vitals.updated_at %}Last updated {{ vitals.updated_at }}{% else %}Not recorded yet{% endif %}</p>
+        </div>
+      </div>
+
+      <!-- monitoring: the actual fall detection pipeline behind this dashboard -->
+      <div class="area-monitoring card-panel">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Monitoring
+        </div>
+        <div class="panel-scroll">
+          <div class="status-row">
+            <span>Device</span>
+            <span class="status-row-val">Raspberry Pi 5</span>
+          </div>
+          <div class="status-row">
+            <span>Last signal</span>
+            <span class="status-row-val">{{ last_seen or 'No signal received yet' }}</span>
+          </div>
+          <div class="status-row">
+            <span>Falls detected today</span>
+            <span class="status-row-val">{{ falls_today }}</span>
+          </div>
+          <div class="status-row">
+            <span>False alarms this week</span>
+            <span class="status-row-val">{{ false_alarms_this_week }} of {{ alerts_this_week_count }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- medication: today's doses, click a row to toggle taken/pending -->
+      <div class="area-meds card-panel">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="8.5" width="17" height="7" rx="3.5" transform="rotate(-45 12 12)"/><line x1="8.5" y1="15.5" x2="15.5" y2="8.5"/></svg>
+          Medication
+        </div>
+        <div class="panel-scroll">
+          <p class="med-section-label">Today's doses - {{ doses_taken }} of {{ doses_total }} taken</p>
+          <div class="dose-progress-bar compact">
+            <div class="fill" style="width: {{ adherence }}%;"></div>
+          </div>
+
+          {% if medications %}
+          {% for med in medications %}
+          <form method="post" action="{{ url_for('toggle_medication', med_id=med.id) }}" class="dose-row compact">
+            <button type="submit" class="dose-check {{ 'taken' if med.taken_today else 'pending' }}">
+              {% if med.taken_today %}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              {% endif %}
+            </button>
+            <div class="dose-info">
+              <span class="dose-name {{ 'taken' if med.taken_today else '' }}">{{ med.name }}{% if med.dosage %} - {{ med.dosage }}{% endif %}</span>
+              <p class="med-row-detail">{{ [med.frequency, med.time, med.when_to_take] | select | join(' - ') }}{% if med.duration %} &middot; {{ med.duration }}{% endif %}</p>
+            </div>
+          </form>
+          {% endfor %}
+          {% if medications_hidden_count > 0 %}
+          <a href="{{ url_for('profile_edit') }}" class="med-manage-all">+{{ medications_hidden_count }} more medication{{ 's' if medications_hidden_count != 1 else '' }} - Manage all &rarr;</a>
+          {% endif %}
+          {% else %}
+          <p class="mini-caption">No medications added yet - add one from Edit Profile.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- recent activity + bridge callout combined -->
+      <div class="area-activity card-panel">
+        <div class="panel-title">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Recent activity
+          <span class="chart-note">Illustrative data - not from live sensors</span>
+        </div>
+        <!-- <p class="mini-caption chart-caption">Minutes of activity per day</p> -->
+        {% set max_minutes = (activity | map(attribute='minutes') | list | max) %}
+        <div class="activity-bars">
+          {% for day in activity %}
+          <div class="activity-bar-col">
+            <span class="activity-bar-value">{{ day.minutes }} min</span>
+            <div class="activity-bar" style="height: {{ (day.minutes / max_minutes * 100) | round(1) }}%;"></div>
+            <span class="activity-bar-day">{{ day.day }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        <p class="mini-caption">Vitals outside the safe range are flagged automatically - see <a href="{{ url_for('alerts_page') }}">Alerts</a> for details.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer compact">
+    <nav class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Help &amp; Support</a>
+    </nav>
+    <p class="footer-brand">&copy; 2026 SeniorConnect <span class="footer-tagline"></span></p>
+    <span class="footer-university">Sheffield Hallam University</span>
+  </footer>
+
+</body>
+</html>

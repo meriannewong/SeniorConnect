@@ -1,0 +1,1238 @@
+:root {
+  --bg: #F5F7F9;
+  --card-bg: #FFFFFF;
+  --border: #E1E7EB;
+  --text-main: #1E2A32;
+  --text-muted: #5B6B76;
+  --brand: #2F80ED;
+  --brand-dark: #1B4F91;
+  --topbar-bg: #0B1D3F;
+  --topbar-text: #FFFFFF;
+  --topbar-text-muted: rgba(255, 255, 255, 0.75);
+  --topbar-accent: #FFFFFF;
+  --topbar-accent-bg: rgba(255, 255, 255, 0.14);
+  --topbar-border: rgba(255, 255, 255, 0.12);
+  --high: #C4433A;
+  --high-bg: #FBEAE9;
+  --medium: #C8791E;
+  --medium-bg: #FBF1E2;
+  --low: #5B6B76;
+  --low-bg: #EDF0F2;
+  --teal: #0F766E;
+  --teal-bg: #E1F3F1;
+}
+
+* { box-sizing: border-box; }
+
+button, a { transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease; }
+button:active { transform: translateY(1px); }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: nowrap;
+  padding: 18px 32px;
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--topbar-border);
+  color: var(--topbar-text);
+}
+
+.topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--topbar-text);
+}
+
+.topbar .brand-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.topbar .brand:hover { opacity: 0.75; }
+
+.topbar nav a {
+  color: var(--topbar-text-muted);
+  text-decoration: none;
+  margin-left: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 1rem;
+}
+
+.topbar nav a.active,
+.topbar nav a:hover {
+  color: var(--topbar-accent);
+  background: var(--topbar-accent-bg);
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  color: var(--topbar-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.topbar .brand,
+.topbar nav {
+  flex-shrink: 0;
+}
+
+.topbar nav {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4ADE80;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+}
+
+/* offline = red dot, no pulse */
+.status-pill.offline .pulse-dot {
+  background: var(--high);
+  animation: none;
+}
+
+main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+  flex: 1;
+  width: 100%;
+}
+
+h1.page-title {
+  font-size: 1.625rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+p.page-sub {
+  color: var(--text-muted);
+  margin: 0 0 24px;
+  font-size: 1.0rem;
+}
+
+.empty-state {
+  background: var(--card-bg);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 40px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.empty-state p { margin: 0; max-width: 360px; }
+.empty-state-icon { flex-shrink: 0; }
+
+.alert-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--low);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+}
+
+.alert-card.high { border-left-color: var(--high); }
+.alert-card.medium { border-left-color: var(--medium); }
+.alert-card.low { border-left-color: var(--low); }
+
+.severity-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 3px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.severity-badge.high { background: var(--high-bg); color: var(--high); }
+.severity-badge.medium { background: var(--medium-bg); color: var(--medium); }
+.severity-badge.low, .severity-badge.unknown { background: var(--low-bg); color: var(--low); }
+.severity-badge.alert { background: var(--high-bg); color: var(--high); }
+.severity-badge.reminder { background: var(--low-bg); color: var(--low); }
+
+.chart-note {
+  font-size: 0.7rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.alert-body { flex: 1; }
+
+.alert-message {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+
+.alert-time {
+  font-size: 0.7rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.alert-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ack-button {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--brand-dark);
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ack-button:hover { background: var(--brand); color: white; border-color: var(--brand); }
+
+.false-alarm-button {
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.false-alarm-button:hover { background: var(--low-bg); border-color: var(--low); }
+
+.call-button {
+  display: inline-block;
+  text-align: center;
+  border: 1px solid #D6488F;
+  background: white;
+  color: #B23570;
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.call-button:hover { background: #D6488F; color: white; }
+
+.sos-button {
+  border: 1px solid var(--high);
+  background: var(--high);
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sos-button:hover { opacity: 0.85; }
+
+.ack-button,
+.false-alarm-button,
+.call-button,
+.sos-button {
+  width: 100%;
+  text-align: center;
+}
+
+table.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table.history-table th,
+table.history-table td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.875rem;
+}
+
+table.history-table th {
+  background: #EEF2F4;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+table.history-table tr:last-child td { border-bottom: none; }
+
+.status-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.status-tag.acknowledged { background: var(--low-bg); color: var(--low); }
+.status-tag.active { background: var(--high-bg); color: var(--high); }
+.status-tag.false_alarm { background: var(--medium-bg); color: var(--medium); }
+
+/* ---------- dashboard page ---------- */
+/* fixed-height grid instead of a stacked, scrolling page - everything
+   fits in one screen. cards that could overflow (labs, meds) scroll
+   within themselves via .panel-scroll instead of scrolling the page.
+   below 1000px there isn't room for the grid, so it falls back to a
+   normal stacked layout - see the media query at the bottom. */
+
+body.dashboard-shell {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.dashboard-shell .topbar { flex-shrink: 0; }
+
+.resident-strip {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 25px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text-main);
+}
+
+.resident-strip:hover { background: var(--bg); }
+
+.resident-strip-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.resident-strip-avatar svg { width: 16px; height: 16px; }
+
+.resident-strip-name { font-weight: 600; font-size: 1.2rem; font-family: "Fraunces", Georgia, serif; color: var(--brand-dark); }
+.resident-strip-link { margin-left: auto; font-size: 0.8125rem; color: var(--brand-dark); }
+
+.alert-banner {
+  flex-shrink: 0;
+  background: var(--high-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 25px;
+}
+
+.alert-title-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+
+.alert-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--high);
+  animation: pulse-alert 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-alert {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(196, 67, 58, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(196, 67, 58, 0); }
+}
+
+.alert-title { font-weight: 600; color: var(--high); }
+.alert-banner .alert-body { font-size: 0.85rem; color: var(--high); margin: 0 0 6px; }
+.alert-link { font-size: 0.8125rem; font-weight: 600; color: var(--high); text-decoration: none; }
+.alert-link:hover { text-decoration: underline; }
+
+.dashboard-grid-wrap {
+  flex: 1;
+  min-height: 0;
+  padding: 14px 20px;
+}
+
+/* .dashboard-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "vitals   meds"
+    "activity activity";
+  gap: 12px;
+}
+
+.area-vitals { grid-area: vitals; }
+.area-meds { grid-area: meds; }
+.area-activity { grid-area: activity; } */
+
+.dashboard-grid {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "vitals   monitoring"
+    "meds     activity";
+  gap: 12px;
+}
+
+.area-vitals { grid-area: vitals; }
+.area-monitoring { grid-area: monitoring; }
+.area-meds { grid-area: meds; }
+.area-activity { grid-area: activity; }
+
+.card-panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(30, 42, 50, 0.05);
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.card-panel:hover {
+  box-shadow: 0 4px 14px rgba(30, 42, 50, 0.09);
+  transform: translateY(-1px);
+}
+
+.panel-scroll {
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.panel-title {
+  /* font-family: "Fraunces", Georgia, serif; */
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--brand-dark);
+  margin: 0 0 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.panel-title svg { flex-shrink: 0; }
+
+/* ---------- resident profile page ---------- */
+
+.resident-card {
+  max-width: 720px;
+  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 26px;
+  box-shadow: 0 1px 3px rgba(30, 42, 50, 0.05);
+}
+
+.resident-card .avatar-circle {
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.avatar-circle img,
+.resident-strip-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.photo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.photo-preview {
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.photo-preview-empty {
+  background: var(--brand);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo-upload-controls input[type="file"] { font-size: 0.98rem; }
+
+h2.resident-name {
+  font-family: "Fraunces", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin: 0 0 2px;
+  color: var(--brand-dark);
+}
+
+.resident-card .sub-line { font-size: 0.98rem; margin: 0 0 7px; }
+
+.resident-card .edit-link {
+  display: inline-block;
+  margin-top: 16px;
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: white;
+  font-size: 0.875rem;
+  padding: 8px 16px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.resident-card .edit-link:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+
+.info-grid.compact {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 12px;
+  margin: 0 0 14px;
+  padding: 0;
+}
+
+.info-category {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--brand-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 28px 0 3px;
+}
+
+.info-category:first-of-type { margin-top: 4px; }
+
+.info-grid.compact dt { font-size: 0.88rem; text-transform: uppercase; margin: 0; }
+.info-grid.compact dd { font-size: 0.875rem; color: var(--text-muted); margin: 0px 0 0; }
+.info-grid.compact .span-2 { grid-column: span 2; }
+
+.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.tag-pill { font-size: 0.88rem; padding: 3px 9px; border-radius: 999px; }
+.tag-pill.allergy { background: var(--high-bg); color: var(--high); }
+.tag-pill.condition { background: var(--low-bg); color: var(--low); }
+
+/* status dot - reused by Needs Attention and the Vitals card */
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot.ok { background: #4ADE80; }
+.status-dot.warn { background: var(--medium); }
+.status-dot.danger { background: var(--high); }
+
+/* needs attention banner - sits above the grid, flex-shrink:0 like the topbar */
+
+.needs-attention {
+  flex-shrink: 0;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 25px;
+}
+
+.needs-attention-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--high);
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.needs-attention-title svg { flex-shrink: 0; }
+
+.needs-attention.all-clear {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.needs-attention.all-clear p { margin: 0; }
+
+.needs-attention-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 0;
+  max-width: 480px;
+}
+
+.needs-attention-info { flex: 1; }
+.needs-attention-name { font-weight: 600; margin: 0; font-size: 0.88rem; display: flex; align-items: center; gap: 6px; }
+.needs-attention-detail { color: var(--text-muted); font-size: 0.78rem; margin: 0; }
+.needs-attention-meta { text-align: right; }
+.needs-attention-value { font-weight: 600; margin: 0; font-size: 0.88rem; }
+.needs-attention-note { color: var(--text-muted); font-size: 0.78rem; margin: 0; }
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+}
+
+.status-row:last-of-type { border-bottom: none; }
+.status-row-val { font-weight: 600; }
+
+/* vitals card - one card, one row per metric, each still with its own
+   quick-update form where applicable */
+
+.vital-mini-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.vital-mini-row:last-of-type { border-bottom: none; }
+
+.vital-mini-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 6px;
+}
+
+.vital-mini-label { font-size: 0.9rem; color: var(--text-dark); }
+.vital-mini-value { font-weight: 600; margin-left: auto; }
+
+.mini-caption { font-size: 0.78rem; color: var(--text-muted); margin: 6px 0 8px; }
+
+.vital-edit {
+  display: flex;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.vital-edit input {
+  width: 0;
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 6px;
+  font-size: 0.78rem;
+}
+
+.vital-edit button {
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: white;
+  font-size: 0.875rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.vital-edit button:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+
+/* medication doses */
+
+.med-section-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin: 0 0 6px;
+}
+
+.dose-progress-bar.compact {
+  height: 6px;
+  background: var(--low-bg);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.dose-progress-bar .fill { height: 100%; background: var(--brand); }
+
+.dose-row.compact {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+
+.dose-row.compact:last-of-type { border-bottom: none; }
+.dose-info { min-width: 0; }
+
+.dose-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.dose-check:hover { border-color: var(--brand); transform: scale(1.08); }
+.dose-check:active { transform: scale(0.92); }
+
+.dose-check svg {
+  width: 12px;
+  height: 12px;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+
+.dose-check.taken svg { transform: scale(1); }
+.dose-check.taken { background: var(--brand); border-color: var(--brand); }
+.dose-check.pending { color: transparent; }
+
+.dose-name { font-size: 0.88rem; }
+.dose-name.taken { color: var(--text-muted); text-decoration: line-through; }
+
+/* activity chart */
+
+.activity-bars {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+}
+
+.activity-bar-col {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.activity-bar-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  /* color: var(--brand-dark); */
+  margin-bottom: 4px;
+}
+
+.activity-bar {
+  width: 100%;
+  background: var(--brand);
+  border-radius: 4px 4px 0 0;
+  min-height: 2px;
+}
+
+.activity-bar-day {
+  font-size: 0.85rem;
+  font-weight: 600;
+  /* color: var(--brand-dark); */
+  margin-top: 6px;
+}
+
+/* below this width the grid doesn't have room to breathe, so drop back
+   to a normal stacked page that scrolls like the other two pages */
+@media (max-width: 1000px) {
+  body.dashboard-shell { height: auto; overflow: visible; }
+  .dashboard-grid-wrap { padding: 20px; }
+  /* .dashboard-grid {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "vitals"
+      "meds"
+      "activity";
+  } */
+  .dashboard-grid {
+    height: auto;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "vitals"
+      "monitoring"
+      "meds"
+      "activity";
+  }
+  .card-panel { min-height: 120px; }
+}
+
+/* login / register */
+
+.auth-shell {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 26px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-card .page-title { margin: 0 0 4px; }
+.auth-card .page-sub { margin: 0 0 34px; }
+
+.auth-card label {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.auth-card input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.88rem;
+  margin-bottom: 14px;
+}
+
+.auth-card button {
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: white;
+  font-size: 0.88rem;
+  padding: 9px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.auth-card button:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+
+.form-error {
+  background: var(--high-bg);
+  color: var(--high);
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin: 0 0 14px;
+}
+
+.form-success {
+  background: var(--low-bg);
+  color: var(--low);
+  font-size: 0.8rem;
+  padding: 8px 10px;
+  border-radius: 6px;
+  margin: 0 0 14px;
+}
+
+.form-success-teal {
+  background: var(--teal-bg);
+  color: var(--teal);
+  transition: opacity 0.4s ease;
+}
+
+.auth-switch { font-size: 0.8rem; color: var(--text-muted); margin: 14px 0 0; text-align: center; }
+.auth-switch a { color: var(--brand); }
+
+/* resident profile create/edit form - reuses the auth-card look but wider,
+   with two fields per row where it makes sense */
+
+.edit-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 40px 20px;
+}
+
+.med-list { margin-bottom: 20px; }
+
+.med-row {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.med-row:last-child { border-bottom: none; }
+
+.med-row-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.med-row-name { font-weight: 600; margin: 0 0 2px; }
+.med-row-detail { font-size: 0.8125rem; color: var(--text-muted); margin: 0; }
+
+.med-edit summary {
+  display: inline-block;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--brand-dark);
+  font-size: 0.8125rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  list-style: none;
+  margin-top: 8px;
+}
+
+.med-edit summary::-webkit-details-marker { display: none; }
+.med-edit summary:hover { background: var(--brand); color: white; border-color: var(--brand); }
+.med-edit[open] summary { margin-bottom: 12px; }
+
+.edit-card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 26px;
+}
+
+.edit-card .page-title { margin: 0 0 4px; }
+.edit-card .page-sub { margin: 0 0 20px; }
+
+.edit-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.edit-field { display: flex; flex-direction: column; margin-bottom: 14px; }
+.edit-field.span-2 { grid-column: span 2; }
+
+.edit-field label {
+  font-size: 1rem;
+  /* color: var(--text-muted); */
+  margin-bottom: 4px;
+}
+
+.edit-field input {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.88rem;
+}
+
+.edit-card .save-button {
+  border: 1px solid var(--brand);
+  background: var(--brand);
+  color: white;
+  font-size: 0.88rem;
+  padding: 9px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 6px;
+}
+
+.edit-card .save-button:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
+
+@media (max-width: 640px) {
+  .edit-row { grid-template-columns: 1fr; }
+  .edit-field.span-2 { grid-column: span 1; }
+}
+
+/* username + logout in the topbar nav */
+
+/* user menu - native <details> dropdown, no JS needed */
+
+.topbar .user-menu {
+  position: relative;
+}
+
+.topbar .user-menu summary {
+  color: var(--topbar-text);
+  background: var(--topbar-accent-bg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+  margin-left: 20px;
+  padding: 6px 14px;
+  border-radius: 999px;
+}
+
+.topbar .user-menu summary::-webkit-details-marker { display: none; }
+.topbar .user-menu summary::after { content: " ▾"; }
+.topbar .user-menu summary:hover { background: rgba(255, 255, 255, 0.26); }
+
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 14px rgba(30, 42, 50, 0.15);
+  min-width: 160px;
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* ".topbar nav a" outranks a plain ".user-menu-dropdown a" on specificity,
+   which was why these links inherited the near-white nav text color and
+   went invisible on the white dropdown background - going through "nav"
+   here beats that */
+.topbar nav .user-menu-dropdown a {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  text-decoration: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.user-menu-dropdown a:last-child { border-bottom: none; }
+.user-menu-dropdown a:hover { text-decoration: underline; }
+
+/* admin - delete account button */
+
+.delete-button {
+  border: 1px solid var(--high);
+  background: white;
+  color: var(--high);
+  font-size: 0.875rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.delete-button:hover { background: var(--high); color: white; }
+
+/* section headers + select inside the resident edit form */
+
+.edit-card .edit-section {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--brand-dark);
+  margin: 22px 0 12px;
+}
+
+.edit-card .edit-section:first-of-type { margin-top: 0; }
+
+.edit-field select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.88rem;
+  background: white;
+}
+
+/* current medications - name / dose / time side by side */
+
+.med-input-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+}
+
+.med-input-row input,
+.med-input-row select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.88rem;
+  background: white;
+}
+
+@media (max-width: 640px) {
+  .med-input-row { grid-template-columns: 1fr; }
+}
+
+/* greeting line above the resident profile form title */
+
+.edit-card .greeting {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0 0 2px;
+}
+
+/* site footer */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  padding: 14px 32px;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.footer-links { display: flex; gap: 16px; flex-wrap: wrap; flex: 0 0 auto; }
+.footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.8125rem; }
+.footer-links a:hover { text-decoration: underline; color: var(--text-main); }
+
+.footer-brand { font-weight: 600; margin: 0; font-size: 0.8125rem; text-align: center; flex: 1; }
+.footer-tagline { color: var(--text-muted); font-weight: 400; }
+
+.footer-university { color: var(--text-muted); font-size: 0.8125rem; white-space: nowrap; flex: 0 0 auto; }
+
+/* compact variant for the fixed-height profile dashboard - same three-part
+   row, just tighter padding so it still fits as a flex-shrink:0 row
+   alongside the topbar */
+.dashboard-shell .site-footer.compact {
+  flex-shrink: 0;
+  padding: 8px 24px;
+  margin-top: 0;
+}
+
+/* "manage all" link when there are more meds than fit on the dashboard card */
+
+.med-manage-all {
+  display: block;
+  text-align: center;
+  padding: 8px 0;
+  font-size: 0.8125rem;
+  color: var(--brand-dark);
+  text-decoration: none;
+}
+
+.med-manage-all:hover { text-decoration: underline; }
+
+/* profile page - three-column info layout (Physical / Contact / Medical) */
+
+.info-columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 20px 0 14px;
+}
+
+.info-columns .info-column {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  min-width: 0;
+}
+
+.info-columns .info-category {
+  margin: 0 0 10px;
+}
+
+.info-columns .info-grid.compact {
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin: 0;
+}
+
+.info-column-full {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 0 0 14px;
+}
+
+.info-column-full .info-category {
+  margin: 0 0 10px;
+}
+
+.med-row-note {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 3px 0 0;
+}
+
+@media (max-width: 760px) {
+  .info-columns {
+    grid-template-columns: 1fr;
+  }
+}

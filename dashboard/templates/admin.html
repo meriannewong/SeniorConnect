@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SeniorConnect - Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+      <svg class="brand-mark" width="35" height="35" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="10" r="4.2" fill="#4A90D2"/>
+        <path d="M14 15.5c-5 0-8.5 4-8.5 9v6.5c0 1 .8 1.8 1.8 1.8h13.4c1 0 1.8-.8 1.8-1.8V24.5c0-5-4-9-8.5-9z" fill="#4A90D2"/>
+        <circle cx="25" cy="16" r="3.4" fill="#5DADE2"/>
+        <path d="M25 20.2c-4 0-7 3.2-7 7.3v3.6c0 .9.7 1.6 1.6 1.6h10.8c.9 0 1.6-.7 1.6-1.6v-3.6c0-4.1-3-7.3-7-7.3z" fill="#5DADE2"/>
+        <path d="M4 33c4-4 8-4 12-1c4-3 8-3 12 1" fill="none" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <span class="brand-name">SeniorConnect</span>
+    </a>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('admin') }}" class="active">Admin</a>
+      <details class="user-menu">
+        <summary>Welcome, {{ session['username'] }}</summary>
+        <div class="user-menu-dropdown">
+          <a href="{{ url_for('profile') }}">Profile</a>
+          <a href="{{ url_for('profile_edit') }}">Edit Profile</a>
+          <a href="{{ url_for('settings') }}">Settings</a>
+          <a href="{{ url_for('logout') }}">Log out</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+
+  <main>
+    <h1 class="page-title">Caregiver accounts</h1>
+    <p class="page-sub">{{ users|length }} account{{ 's' if users|length != 1 else '' }} registered.</p>
+
+    {% if users|length == 0 %}
+      <div class="empty-state">No accounts yet.</div>
+    {% else %}
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Resident profile</th>
+            <th>Registered</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for u in users %}
+          <tr>
+            <td>{{ u.username }}</td>
+            <td>{{ u.role }}</td>
+            <td>{{ u.resident_name or "Not created yet" }}</td>
+            <td>{{ u.created_at }}</td>
+            <td>
+              {% if u.username != session['username'] %}
+              <form method="post" action="{{ url_for('admin_delete_user', username=u.username) }}">
+                <button type="submit" class="delete-button">Delete</button>
+              </form>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Help &amp; Support</a>
+    </nav>
+    <p class="footer-brand">&copy; 2026 SeniorConnect <span class="footer-tagline"></span></p>
+    <span class="footer-university">Sheffield Hallam University</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SeniorConnect - Register</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="brand">
+      <svg class="brand-mark" width="35" height="35" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="10" r="4.2" fill="#4A90D2"/>
+        <path d="M14 15.5c-5 0-8.5 4-8.5 9v6.5c0 1 .8 1.8 1.8 1.8h13.4c1 0 1.8-.8 1.8-1.8V24.5c0-5-4-9-8.5-9z" fill="#4A90D2"/>
+        <circle cx="25" cy="16" r="3.4" fill="#5DADE2"/>
+        <path d="M25 20.2c-4 0-7 3.2-7 7.3v3.6c0 .9.7 1.6 1.6 1.6h10.8c.9 0 1.6-.7 1.6-1.6v-3.6c0-4.1-3-7.3-7-7.3z" fill="#5DADE2"/>
+        <path d="M4 33c4-4 8-4 12-1c4-3 8-3 12 1" fill="none" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <span class="brand-name">SeniorConnect</span>
+    </div>
+  </div>
+
+  <main class="auth-shell">
+    <form method="post" class="auth-card">
+      <h1 class="page-title">Register</h1>
+      <p class="page-sub">Create your SeniorConnect account.</p>
+
+      {% if error %}
+        <p class="form-error">{{ error }}</p>
+      {% endif %}
+
+      <label>Username</label>
+      <input type="text" name="username" required autofocus>
+
+      <label>Password</label>
+      <input type="password" name="password" required>
+
+      <label>Confirm password</label>
+      <input type="password" name="confirm" required>
+
+      <button type="submit">Create account</button>
+
+      <p class="auth-switch">Already have an account? <a href="{{ url_for('login') }}">Log in</a></p>
+    </form>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Help &amp; Support</a>
+    </nav>
+    <p class="footer-brand">&copy; 2026 SeniorConnect <span class="footer-tagline"></span></p>
+    <span class="footer-university">Sheffield Hallam University</span>
+  </footer>
+
+</body>
+</html>

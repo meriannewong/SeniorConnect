@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>SeniorConnect - Resident profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="{{ url_for('dashboard') }}" class="brand">
+      <svg class="brand-mark" width="35" height="35" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="10" r="4.2" fill="#4A90D2"/>
+        <path d="M14 15.5c-5 0-8.5 4-8.5 9v6.5c0 1 .8 1.8 1.8 1.8h13.4c1 0 1.8-.8 1.8-1.8V24.5c0-5-4-9-8.5-9z" fill="#4A90D2"/>
+        <circle cx="25" cy="16" r="3.4" fill="#5DADE2"/>
+        <path d="M25 20.2c-4 0-7 3.2-7 7.3v3.6c0 .9.7 1.6 1.6 1.6h10.8c.9 0 1.6-.7 1.6-1.6v-3.6c0-4.1-3-7.3-7-7.3z" fill="#5DADE2"/>
+        <path d="M4 33c4-4 8-4 12-1c4-3 8-3 12 1" fill="none" stroke="#5DADE2" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+      </svg>
+      <span class="brand-name">SeniorConnect</span>
+    </a>
+    <nav>
+      <!-- <a href="{{ url_for('dashboard') }}">Dashboard</a> -->
+      <a href="{{ url_for('profile') }}">View profile</a>
+      {% if session.get('role') == 'superuser' %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+      <details class="user-menu">
+        <summary>Welcome, {{ session['username'] }}</summary>
+        <div class="user-menu-dropdown">
+          <a href="{{ url_for('profile') }}">Profile</a>
+          <a href="{{ url_for('profile_edit') }}">Edit Profile</a>
+          <a href="{{ url_for('settings') }}">Settings</a>
+          <a href="{{ url_for('logout') }}">Log out</a>
+        </div>
+      </details>
+    </nav>
+  </div>
+
+  <main class="edit-shell">
+    <form method="post" class="edit-card" enctype="multipart/form-data">
+      <!-- <p class="greeting">Hi, {{ session['username'] }},</p> -->
+      <h1 class="page-title">{{ 'Edit resident profile' if resident else 'Create resident profile' }}</h1>
+      <p class="page-sub">This is the person you care about.</p>
+
+      {% if success %}
+      <p class="form-success form-success-teal" id="save-success-message">{{ success }}</p>
+      {% endif %}
+      {% if error %}
+        <p class="form-error">{{ error }}</p>
+      {% endif %}
+
+      <h2 class="edit-section">Profile photo</h2>
+      <div class="photo-upload-row">
+        {% if photo %}
+        <img src="{{ url_for('static', filename='uploads/' + photo) }}" class="photo-preview" alt="Current photo">
+        {% else %}
+        <div class="photo-preview photo-preview-empty">
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v3h20v-3c0-3.33-6.67-5-10-5z"/></svg>
+        </div>
+        {% endif %}
+        <div class="photo-upload-controls">
+          <input type="file" name="photo" accept=".jpg,.jpeg,.png">
+          <p class="mini-caption">JPG or PNG, up to 5MB.</p>
+        </div>
+      </div>
+
+      <h2 class="edit-section">Personal information</h2>
+      <div class="edit-row">
+        <div class="edit-field span-2">
+          <label>Full name</label>
+          <input type="text" name="name" value="{{ resident.name if resident else '' }}" required>
+        </div>
+
+        <div class="edit-field">
+          <label>Preferred name</label>
+          <input type="text" name="preferred_name" value="{{ resident.preferred_name if resident else '' }}" placeholder="e.g. Ellie">
+        </div>
+        <div class="edit-field">
+          <label>Preferred language</label>
+          <input type="text" name="preferred_language" value="{{ resident.preferred_language if resident else '' }}">
+        </div>
+
+        <div class="edit-field">
+          <label>Date of birth</label>
+          <input type="date" name="dob" value="{{ resident.dob if resident else '' }}">
+        </div>
+        <div class="edit-field">
+          <label>Sex</label>
+          <input type="text" name="sex" value="{{ resident.sex if resident else '' }}">
+        </div>
+      </div>
+
+      <h2 class="edit-section">Physical information</h2>
+      <div class="edit-row">
+        <div class="edit-field">
+          <label>Blood group</label>
+          <input type="text" name="blood_group" value="{{ resident.blood_group if resident else '' }}">
+        </div>
+        <div class="edit-field">
+          <label>Height</label>
+          <input type="text" name="height" value="{{ resident.height if resident else '' }}" placeholder="e.g. 162 cm">
+        </div>
+
+        <div class="edit-field">
+          <label>Weight</label>
+          <input type="text" name="weight" value="{{ resident.weight if resident else '' }}" placeholder="e.g. 58 kg">
+        </div>
+        <div class="edit-field">
+          <label>Mobility level</label>
+          <select name="mobility_level">
+            <option value="" {{ 'selected' if not resident or not resident.mobility_level else '' }}>Not set</option>
+            <option value="Independent" {{ 'selected' if resident and resident.mobility_level == 'Independent' else '' }}>Independent</option>
+            <option value="Needs assistance" {{ 'selected' if resident and resident.mobility_level == 'Needs assistance' else '' }}>Needs assistance</option>
+            <option value="Wheelchair user" {{ 'selected' if resident and resident.mobility_level == 'Wheelchair user' else '' }}>Wheelchair user</option>
+          </select>
+        </div>
+
+        <div class="edit-field span-2">
+          <label>Living situation</label>
+          <select name="living_situation">
+            <option value="" {{ 'selected' if not resident or not resident.living_situation else '' }}>Not set</option>
+            <option value="Lives alone" {{ 'selected' if resident and resident.living_situation == 'Lives alone' else '' }}>Lives alone</option>
+            <option value="Lives with family" {{ 'selected' if resident and resident.living_situation == 'Lives with family' else '' }}>Lives with family</option>
+            <option value="Lives with caregiver" {{ 'selected' if resident and resident.living_situation == 'Lives with caregiver' else '' }}>Lives with caregiver</option>
+          </select>
+        </div>
+      </div>
+
+      <h2 class="edit-section">Medical information</h2>
+      <div class="edit-row">
+        <div class="edit-field span-2">
+          <label>Registered GP</label>
+          <input type="text" name="gp" value="{{ resident.gp if resident else '' }}">
+        </div>
+
+        <div class="edit-field">
+          <label>Allergies (comma separated)</label>
+          <input type="text" name="allergies" value="{{ resident.allergies if resident else '' }}" placeholder="e.g. Penicillin, Peanuts">
+        </div>
+        <div class="edit-field">
+          <label>Conditions (comma separated)</label>
+          <input type="text" name="conditions" value="{{ resident.conditions if resident else '' }}" placeholder="e.g. Type 2 Diabetes, Mild Osteoarthritis">
+        </div>
+
+        <div class="edit-field span-2">
+          <label>Dietary requirements</label>
+          <input type="text" name="dietary_requirements" value="{{ resident.dietary_requirements if resident else '' }}" placeholder="e.g. Low sugar, soft food only">
+        </div>
+        <div class="edit-field span-2">
+          <label>Care needs</label>
+          <input type="text" name="care_needs" value="{{ resident.care_needs if resident else '' }}" placeholder="e.g. Help with bathing and dressing">
+        </div>
+      </div>
+
+      <h2 class="edit-section">Contact information</h2>
+      <div class="edit-row">
+        <div class="edit-field span-2">
+          <label>Mobile number</label>
+          <input type="text" name="mobile" value="{{ resident.mobile if resident else '' }}">
+        </div>
+        <div class="edit-field span-2">
+          <label>Address</label>
+          <input type="text" name="address" value="{{ resident.address if resident else '' }}">
+        </div>
+      </div>
+
+      <h2 class="edit-section">Emergency contact</h2>
+      <div class="edit-row">
+        <div class="edit-field span-2">
+          <label>Name</label>
+          <input type="text" name="emergency_contact_name" value="{{ resident.emergency_contact_name if resident else '' }}">
+        </div>
+        <div class="edit-field">
+          <label>Relationship</label>
+          <input type="text" name="emergency_contact_relationship" value="{{ resident.emergency_contact_relationship if resident else '' }}" placeholder="e.g. Son">
+        </div>
+        <div class="edit-field">
+          <label>Phone number</label>
+          <input type="text" name="emergency_contact_phone" value="{{ resident.emergency_contact_phone if resident else '' }}">
+        </div>
+      </div>
+
+      <button type="submit" class="save-button">Save profile</button>
+    </form>
+
+    <div class="edit-card" id="medications">
+      {% macro medication_fields(med=None) %}
+      <div class="edit-field">
+        <label>Medication name</label>
+        <input type="text" name="name" value="{{ med.name if med else '' }}" placeholder="e.g. Paracetamol">
+      </div>
+      <div class="edit-field">
+        <label>Dosage</label>
+        <input type="text" name="dosage" value="{{ med.dosage if med else '' }}" placeholder="e.g. 500 mg">
+      </div>
+
+      <div class="edit-field">
+        <label>Frequency</label>
+        <select name="frequency">
+          <option value="" {{ 'selected' if not med or not med.frequency else '' }}>Not set</option>
+          <option value="Once a day" {{ 'selected' if med and med.frequency == 'Once a day' else '' }}>Once a day</option>
+          <option value="Twice a day" {{ 'selected' if med and med.frequency == 'Twice a day' else '' }}>Twice a day</option>
+          <option value="Three times a day" {{ 'selected' if med and med.frequency == 'Three times a day' else '' }}>Three times a day</option>
+          <option value="As needed" {{ 'selected' if med and med.frequency == 'As needed' else '' }}>As needed</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label>Time</label>
+        <input type="time" name="time" value="{{ med.time if med else '' }}">
+      </div>
+
+      <div class="edit-field">
+        <label>When to take</label>
+        <select name="when_to_take">
+          <option value="" {{ 'selected' if not med or not med.when_to_take else '' }}>Not set</option>
+          <option value="Before breakfast" {{ 'selected' if med and med.when_to_take == 'Before breakfast' else '' }}>Before breakfast</option>
+          <option value="After breakfast" {{ 'selected' if med and med.when_to_take == 'After breakfast' else '' }}>After breakfast</option>
+          <option value="Before lunch" {{ 'selected' if med and med.when_to_take == 'Before lunch' else '' }}>Before lunch</option>
+          <option value="After lunch" {{ 'selected' if med and med.when_to_take == 'After lunch' else '' }}>After lunch</option>
+          <option value="Before dinner" {{ 'selected' if med and med.when_to_take == 'Before dinner' else '' }}>Before dinner</option>
+          <option value="After dinner" {{ 'selected' if med and med.when_to_take == 'After dinner' else '' }}>After dinner</option>
+          <option value="Bedtime" {{ 'selected' if med and med.when_to_take == 'Bedtime' else '' }}>Bedtime</option>
+          <option value="Anytime" {{ 'selected' if med and med.when_to_take == 'Anytime' else '' }}>Anytime</option>
+        </select>
+      </div>
+      <div class="edit-field">
+        <label>Duration</label>
+        <input type="text" name="duration" value="{{ med.duration if med else '' }}" placeholder="e.g. 7 days or Ongoing">
+      </div>
+
+      <div class="edit-field span-2">
+        <label>Special instructions</label>
+        <input type="text" name="instructions" value="{{ med.instructions if med else '' }}" placeholder="e.g. Take with water">
+      </div>
+      {% endmacro %}
+
+      <h2 class="edit-section">Medication</h2>
+
+      {% if medications %}
+      <div class="med-list">
+        {% for med in medications %}
+        <div class="med-row">
+          <div class="med-row-header">
+            <div>
+              <p class="med-row-name">{{ med.name }}{% if med.dosage %} - {{ med.dosage }}{% endif %}</p>
+              <p class="med-row-detail">{{ [med.frequency, med.time, med.when_to_take] | select | join(' - ') }}{% if med.duration %} &middot; {{ med.duration }}{% endif %}</p>
+              {% if med.instructions %}<p class="med-row-detail">{{ med.instructions }}</p>{% endif %}
+            </div>
+            <form method="post" action="{{ url_for('delete_medication_route', med_id=med.id) }}">
+              <button type="submit" class="delete-button">Remove</button>
+            </form>
+          </div>
+          <details class="med-edit">
+            <summary>Edit</summary>
+            <form method="post" action="{{ url_for('update_medication_route', med_id=med.id) }}">
+              <div class="edit-row">
+                {{ medication_fields(med) }}
+              </div>
+              <button type="submit" class="save-button">Save changes</button>
+            </form>
+          </details>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="page-sub">No medications added yet.</p>
+      {% endif %}
+
+      <h2 class="edit-section">Add medication</h2>
+      <form method="post" action="{{ url_for('add_medication_route') }}">
+        <div class="edit-row">
+          {{ medication_fields() }}
+        </div>
+
+        <button type="submit" class="save-button">Add medication</button>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <nav class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Help &amp; Support</a>
+    </nav>
+    <p class="footer-brand">&copy; 2026 SeniorConnect <span class="footer-tagline"></span></p>
+    <span class="footer-university">Sheffield Hallam University</span>
+  </footer>
+
+  <script>
+    const successMsg = document.getElementById('save-success-message');
+    if (successMsg) {
+        setTimeout(function () {
+        successMsg.style.opacity = '0';
+        }, 5000);
+        successMsg.addEventListener('transitionend', function () {
+        successMsg.style.display = 'none';
+        });
+    }
+
+    if (window.location.hash) {
+      const target = document.querySelector(window.location.hash);
+      if (target) {
+        target.scrollIntoView();
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+venv_tf/
+__pycache__/
+*.pyc
+*.db
+.env
+data/
+uploads/
+hailo_env_v3/
+*.log
+
+# secrets
+**/.azure/config
+
+dashboard/*.db
