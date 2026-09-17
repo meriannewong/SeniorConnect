@@ -16,7 +16,7 @@ runner = ClientRunner(hw_arch=HW_ARCH)
 runner.translate_tf_model(TFLITE_PATH, MODEL_NAME)
 print("parsed successfully")
 
-print("running optimize (quantization) - same as your evaluate_quantized.py run")
+print("running optimize (quantisation) - matches the evaluate_quantized.py run")
 runner.optimize(calib_dataset)
 print("optimize done")
 

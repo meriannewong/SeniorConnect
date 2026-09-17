@@ -281,9 +281,9 @@ if USE_AZURE:
 else:
     import sqlite3
 
-    # anchored to this file's own folder, not wherever you happened to run
-    # "python app.py" from - so the db always ends up in the same place
-    # (dashboard/seniorconnect.db) no matter what directory you're in
+    # anchored to this file's own folder, not wherever "python app.py" gets run
+    # from - so the db always ends up in the same place (dashboard/seniorconnect.db)
+    # regardless of working directory
     DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seniorconnect.db")
 
     def get_db():

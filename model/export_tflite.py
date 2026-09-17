@@ -8,7 +8,7 @@ SAVED_MODELS_DIR = os.path.join(BASE_DIR, "saved_models")
 model = keras.models.load_model(os.path.join(SAVED_MODELS_DIR, "fall_mlp.keras"))
 
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
-# no converter.optimizations / representative_dataset here on purpose -
+# no converter.optimisations / representative_dataset here on purpose -
 # this stays a plain float32 model for Hailo's DFC to parse and quantize itself
 tflite_model = converter.convert()
 

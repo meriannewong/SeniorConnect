@@ -1,12 +1,12 @@
 import requests
 
-# swap MODEL_URL depending on what you're testing against:
+# swap MODEL_URL depending on what's being tested against:
 #   "https://fallmlp-mewong3.azurewebsites.net/predict" for the deployed cloud model
 #   "http://localhost:8000/predict" if running app.py from cloud_baseline/ locally instead
 MODEL_URL = "https://fallmlp-mewong3.azurewebsites.net/predict"
 
 # update this once the dashboard itself is deployed to Azure App Service -
-# for now it's just the local dashboard running on your own machine
+# for now it's just the local dashboard running on this machine
 DASHBOARD_URL = "http://127.0.0.1:5000/api/alert"
 
 # same real feature row used in test_azure_raw.py, so this is directly

@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-# adjust this path if your results folder is somewhere else relative to here
+# relative path, may need updating if folder structure changes
 RESULTS_PATH = "../results/processed_features.csv"
 
 df = pd.read_csv(RESULTS_PATH)

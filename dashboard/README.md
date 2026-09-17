@@ -14,19 +14,19 @@ pip install -r requirements.txt
 python app.py
 ```
 A SQLite file `seniorconnect.db` will be created automatically. Terminal
-will print `Storage mode: local SQLite ...` on startup so you always know
-which mode you're in.
+prints `Storage mode: local SQLite ...` on startup, so the active mode
+is always visible.
 
 **Mode B - connected to real Azure Table Storage:**
 
-1. Create a Storage Account (skip if you already have one from the cloud
+1. Create a Storage Account (skip if already set up from the cloud
    benchmark work): Azure Portal -> Create a resource -> Storage account ->
    fill in resource group / name / region -> Review + create.
 2. Once created, open the Storage Account -> "Access keys" (left sidebar) ->
    copy the "Connection string" under key1.
-3. Set it as an environment variable in your PowerShell session (only lasts
-   for that terminal window - re-run this each time you open a new one, or
-   use `setx` instead of `$env:` if you want it to persist permanently):
+3. Set it as an environment variable in the PowerShell session (only lasts
+   for that terminal window - needs re-running each time a new one opens,
+   or use `setx` instead of `$env:` for it to persist permanently):
    ```
    $env:AZURE_STORAGE_CONNECTION_STRING = "paste the connection string here"
    ```
@@ -40,7 +40,7 @@ which mode you're in.
 
 Never commit the real connection string to git / hand it in with the
 report - it's a credential, treat it like a password. Worth a one-line
-mention in your report's limitations or implementation notes that the
+mention in the report's limitations or implementation notes that the
 connection string is read from an environment variable rather than
 hardcoded, as a basic security practice.
 
@@ -78,13 +78,13 @@ which reads well in the report and in the viva.
 Suggested thresholds based on the model's fall-class probability:
 - `>= 0.90` -> `"high"`
 - `0.70 - 0.90` -> `"medium"`
-- below whatever threshold you're already using to call something a fall at
-  all -> don't send an alert
+- below whatever threshold is already being used to call something a fall
+  at all -> don't send an alert
 
 Wherever the Pi/cloud script currently does something like
 `prediction = model.predict(features)`, it would also have access to the
 probability for the fall class. That's the value to threshold against
-before building the POST body, e.g. (adjust variable names to match your
+before building the POST body, e.g. (adjust variable names to match the
 actual inference script):
 
 ```python
@@ -96,7 +96,7 @@ else:
     severity = None  # not confident enough to alert
 
 if severity:
-    requests.post("https://<your-app-url>/api/alert", json={
+    requests.post("https://<app-url>/api/alert", json={
         "severity": severity,
         "message": "Fall detected, no movement after"
     })
@@ -105,7 +105,7 @@ if severity:
 These threshold numbers are a starting point, not something validated -
 worth mentioning in the report that they were chosen for demonstration and
 would ideally be tuned against labelled data (e.g. how often a 0.75
-probability window was actually a real fall vs a false positive in your
+probability window was actually a real fall vs a false positive in the
 test set).
 
 ## What's still needed to match the full Objective 4 scope
@@ -117,6 +117,6 @@ test set).
    especially since this touches the ethics/data-handling side of the
    caregiver evaluation.
 3. **Deploy this app to Azure App Service** (not just local Flask) so the Pi
-   can actually reach it from outside your laptop - same `az webapp up`
+   can actually reach it from outside the laptop - same `az webapp up`
    pattern already used for the cloud benchmark app.
    

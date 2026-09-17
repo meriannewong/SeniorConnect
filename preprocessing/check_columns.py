@@ -52,7 +52,7 @@ if os.path.exists(FALLALLD_PICKLE):
     print(df.head())
     print("unique ActivityID values:", df["ActivityID"].unique())
 else:
-    print("pickle file not found, did you run FallAllD's own conversion tool first?")
+    print("pickle file not found - need to run FallAllD's own conversion tool first")
 
 print()
 print("---- URFD ----")

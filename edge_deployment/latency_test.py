@@ -10,8 +10,7 @@ N_WARMUP = 10     # a few throwaway runs first, the very first call is often slo
 print("loading a real row of test data to feed the model")
 test_data = np.load(TEST_DATA_PATH, allow_pickle=True)
 X_test = test_data["X_test"].astype(np.float32)
-single_window = np.ascontiguousarray(X_test[0:1])  # one window at a time - this is how it runs in real use,
-                                                   # one fall/no-fall decision every time a new sensor window comes in
+single_window = np.ascontiguousarray(X_test[0:1])  # one window at a time - matches real deployment: one decision per incoming sensor window
 
 print("loading HEF and configuring device")
 hef = HEF(HEF_PATH)
@@ -60,6 +59,5 @@ print("p99:   ", round(np.percentile(times_ms, 99), 3))
 print()
 print("throughput:", round(1000 / times_ms.mean(), 1), "windows/second (single-window loop)")
 print()
-print("note: this times the full python round trip (function call in, result out),")
-print("not just the NPU's internal compute time - this is the honest number for")
-print("'how fast does the deployed system respond', which is what the report needs")
+print("note: timing the full python round trip (call in, result out),")
+print("not just NPU compute time - this is the number that matters for latency reporting")
